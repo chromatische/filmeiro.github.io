@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filmeiro - Produção de Vídeo com Inteligência Artificial</title>
+    <meta name="description" content="Combinamos o poder da IA com a sensibilidade de profissionais premiados para criar vídeos que encantam, engajam e performam.">
+
+    <!-- Social & SEO Meta Tags (Open Graph) -->
+    <meta property="og:title" content="Filmeiro - IA e Genialidade Humana">
+    <meta property="og:description" content="Combinamos o poder da IA com a sensibilidade de profissionais premiados para criar vídeos que encantam, engajam e performam.">
+    <meta property="og:image" content="data:image/svg+xml,%3Csvg width='1200' height='630' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1200' height='630' fill='black'/%3E%3Cg transform='translate(545, 300) scale(2)'%3E%3Crect x='0' y='0' width='30' height='30' fill='%2332CD32'/%3E%3Crect x='40' y='0' width='30' height='30' rx='8' fill='%2332CD32'/%3E%3Ccircle cx='95' cy='15' r='15' fill='%2332CD32'/%3E%3C/g%3E%3C/svg%3E">
+    <meta property="og:url" content="https://www.filmeiro.com">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: IBM Plex Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Swiper.js for Carousel -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 30'%3E%3Crect x='0' y='0' width='30' height='30' fill='%2332CD32'/%3E%3Crect x='40' y='0' width='30' height='30' rx='8' fill='%2332CD32'/%3E%3Ccircle cx='95' cy='15' r='15' fill='%2332CD32'/%3E%3C/svg%3E">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googagmanager.com/gtag/js?id=G-YE8C6F4EVC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-YE8C6F4EVC');
+    </script>
+
+    <style>
+        :root {
+            --terminal-green: #32CD32;
+            --terminal-bg: #000000;
+            --terminal-text: #E0E0E0;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background-color: var(--terminal-bg);
+            color: var(--terminal-text);
+        }
+        
+        #background-video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; overflow: hidden;
+        }
+        #background-video {
+            width: 100vw; height: 100vh; object-fit: cover;
+        }
+
+        .video-overlay::after {
+            content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); z-index: -9;
+        }
+        
+        main {
+            position: relative; z-index: 1; background-color: transparent; 
+        }
+
+        /* Blinking cursor effect */
+        .blinking-cursor::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+            color: var(--terminal-green);
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Command prompt style */
+        .prompt::before {
+            content: '> ';
+            color: var(--terminal-green);
+        }
+        
+        .command-button {
+            border: 1px solid var(--terminal-green);
+            color: var(--terminal-green);
+            background-color: transparent;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .command-button:hover {
+            background-color: var(--terminal-green);
+            color: var(--terminal-bg);
+        }
+        
+        /* Swiper Carousel adjustments */
+        .swiper-container {
+            width: 100%;
+            padding-top: 20px;
+            padding-bottom: 50px;
+        }
+        .swiper-slide {
+            background-position: center;
+            background-size: cover;
+            width: 80%;
+            max-width: 640px;
+            /* Removemos a borda e o fundo */
+            background-color: transparent;
+            border: none;
+            /* Adicionamos opacidade e transição */
+            opacity: 0.4;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .swiper-slide iframe {
+            width: 100%;
+            height: 360px;
+            border: none;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: var(--terminal-green) !important;
+        }
+        .swiper-button-next, .swiper-button-prev {
+            color: var(--terminal-green) !important;
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="video-overlay"></div>
+    <div id="background-video-container">
+        <video id="background-video" autoplay loop muted playsinline poster="https://placehold.co/1920x1080/000000/32CD32?text=Loading...">
+            <source src="reel.mp4" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+        </video>
+    </div>
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-30 bg-black/50 backdrop-blur-sm border-b border-white/20">
+        <div class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="#" aria-label="Página Inicial da Filmeiro" class="text-xl font-bold text-white">
+                filmeiro<span class="text-green-400">.ai</span><span class="blinking-cursor"></span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-6 text-sm">
+                <a href="#about" class="text-gray-300 hover:text-green-400">./quem-somos</a>
+                <a href="#solutions" class="text-gray-300 hover:text-green-400">./solucoes</a>
+                <a href="#portfolio" class="text-gray-300 hover:text-green-400">./trabalhos</a>
+            </nav>
+             <a href="https://wa.me/5571999921617?text=Ol%C3%A1!%20Vi%20o%20site%20da%20filmeiro%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto." target="_blank" class="command-button font-bold py-2 px-4 text-sm">
+                contact(us)
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="h-screen flex items-center justify-center text-center">
+            <div class="relative z-10 p-6">
+                <div class="mb-6 flex justify-center">
+                    <svg class="h-8 w-auto text-green-400" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 30">
+                        <rect x="0" y="0" width="30" height="30"></rect>
+                        <rect x="40" y="0" width="30" height="30" rx="8"></rect>
+                        <circle cx="95" cy="15" r="15"></circle>
+                    </svg>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight mb-4">
+                    <span id="typing-effect"></span>
+                </h2>
+                <p class="text-md md:text-lg text-gray-300 max-w-3xl mx-auto mb-8">
+                    Combinamos o poder da IA com a sensibilidade de profissionais premiados para criar vídeos que encantam, engajam e performam.
+                </p>
+                <a href="#contact" class="command-button inline-block font-bold py-3 px-8 text-lg">
+                    start_project()
+                </a>
+            </div>
+        </section>
+        
+        <!-- QUEM SOMOS -->
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="bg-black/50 p-8 md:p-12 border border-white/20 max-w-4xl mx-auto">
+                    <h3 class="text-3xl md:text-4xl font-bold text-white text-center mb-8">./quem-somos.txt<span class="blinking-cursor"></span></h3>
+                    <div class="text-gray-300 space-y-4 text-base leading-relaxed">
+                        <p class="prompt">Filmeiro é um estúdio criativo da Bahia, que trabalha com projetos assistidos por inteligência artificial desde 2022.</p>
+                        <p class="prompt">Nossa equipe é formada por profissionais premiados, com experiência em criação e audiovisual tradicional — o que garante consistência estética e rigor técnico em cada projeto.</p>
+                         <p class="prompt">Entre os trabalhos de destaque, estão a campanha Soberano da APEX Brasil em resposta ao "tarifaço", 100% feita em IA, e a campanha Inovação da Prefeitura do Recife, que trouxe vida à figuras como Santos Dumont e Albert Einstein.</p>
+                        <p class="prompt">No mercado publicitário, colaboramos com grandes agências como Propeg, Usina, BTS, Nova, Brivia e Objectiva, corporificando peças para apresentação de campanhas em concorrências e licitações.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOLUÇÕES -->
+        <section id="solutions" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-white">./solucoes<span class="blinking-cursor"></span></h3>
+                    <p class="text-green-400 mt-2">// Potencializamos cada etapa do seu processo criativo.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      <div class="bg-black/50 p-8 border border-white/20">
+                        <div class="text-green-400 mb-4 font-mono text-2xl">[Para Agências]</div>
+                        <h4 class="text-2xl font-bold text-white mb-3">function pre_production()</h4>
+                        <p class="text-gray-300">Acelere sua pré-produção com storyboards, animatics e monstros gerados por IA. Entregamos a base perfeita para suas campanhas com agilidade e precisão.</p>
+                    </div>
+                    <div class="bg-black/50 p-8 border border-white/20">
+                        <div class="text-green-400 mb-4 font-mono text-2xl">[Para Produtoras]</div>
+                        <h4 class="text-2xl font-bold text-white mb-3">function post_production()</h4>
+                        <p class="text-gray-300">Integre nossas soluções de IA para otimizar fluxos de trabalho e explorar novas linguagens visuais, expandindo as possibilidades criativas em seus projetos.</p>
+                    </div>
+                    <div class="bg-black/50 p-8 border border-white/20">
+                        <div class="text-green-400 mb-4 font-mono text-2xl">[Para Empresas]</div>
+                        <h4 class="text-2xl font-bold text-white mb-3">function full_stack()</h4>
+                        <p class="text-gray-300">Criação de ponta a ponta: desde conteúdos até sites e materiais de marca com IA, elevando a qualidade e o impacto da sua comunicação.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- NOSSOS TRABALHOS -->
+        <section id="portfolio" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-white">./trabalhos<span class="blinking-cursor"></span></h3>
+                    <p class="mt-2 text-green-400">// Uma amostra do que podemos criar juntos.</p>
+                </div>
+                <div class="bg-black/50 p-8 border border-white/20 max-w-5xl mx-auto">
+                    <!-- Swiper -->
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide"><iframe src="https://www.youtube.com/embed/JjiMHVA1EAM" allowfullscreen></iframe></div>
+                            <div class="swiper-slide"><iframe src="https://www.youtube.com/embed/A1YHOu6Cy1E" allowfullscreen></iframe></div>
+                            <div class="swiper-slide"><iframe src="https://www.youtube.com/embed/CcOyNoHdcVA" allowfullscreen></iframe></div>
+                            <div class="swiper-slide"><iframe src="https://www.youtube.com/embed/qa9UtBGcypQ" allowfullscreen></iframe></div>
+                            <div class="swiper-slide"><iframe src="https://www.youtube.com/embed/Id1PLCmRWvk" allowfullscreen></iframe></div>
+                        </div>
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination"></div>
+                        <!-- Add Navigation -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer id="contact" class="bg-black/50 py-16 border-t border-white/20">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl font-bold text-white mb-4">initiate_contact</h3>
+                <p class="text-gray-300 mb-8 max-w-2xl mx-auto">Nossa equipe está pronta para colaborar no seu próximo projeto.</p>
+                <a href="https://wa.me/5571999921617?text=Ol%C3%A1!%20Vi%20o%20site%20da%20filmeiro%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto." 
+                   target="_blank" 
+                   class="command-button inline-flex items-center justify-center font-bold py-4 px-10 text-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-6 w-6 mr-3" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"></path></svg>
+                    <span>Executar WhatsApp</span>
+                </a>
+                
+                 <div class="mt-12">
+                    <a href="https://www.instagram.com/filmeiro" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-gray-300 hover:text-green-400 transition-colors duration-300">
+                        <svg class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><rect width="20" height="20" x="2" y="2" rx="0"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" stroke-linecap="round"></line></svg>
+                        <span>Follow @filmeiro</span>
+                    </a>
+                </div>
+
+                <p class="text-gray-600 text-sm mt-12">© 2025 filmeiro. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // --- Typing Effect ---
+        const typingElement = document.getElementById('typing-effect');
+        const text1 = "Inteligência Artificial.";
+        const text2 = "Genialidade Humana.";
+        const typingSpeed = 100;
+        const deletingSpeed = 50;
+        const delayBetween = 2000;
+
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentText = textIndex % 2 === 0 ? text1 : text2;
+            const currentSpan = document.createElement('span');
+            
+            if (isDeleting) {
+                charIndex--;
+            } else {
+                charIndex++;
+            }
+
+            typingElement.innerHTML = ''; // Clear previous content
+            
+            const textToShow = currentText.substring(0, charIndex);
+            
+            if (textIndex % 2 !== 0) { // If it's the second text
+                const firstPart = document.createElement('span');
+                firstPart.textContent = text1 + " ";
+                firstPart.classList.add('text-white');
+                typingElement.appendChild(firstPart);
+            }
+
+            const typingPart = document.createElement('span');
+            typingPart.textContent = textToShow;
+            typingPart.classList.add('text-green-400');
+            typingElement.appendChild(typingPart);
+
+            // Add blinking cursor
+            const cursor = document.createElement('span');
+            cursor.classList.add('blinking-cursor');
+            typingElement.appendChild(cursor);
+
+            let typeSpeed = isDeleting ? deletingSpeed : typingSpeed;
+
+            if (!isDeleting && charIndex === currentText.length) {
+                typeSpeed = delayBetween;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex++;
+                 if (textIndex % 2 === 0) { // After deleting second text, reset to show first
+                    typingElement.innerHTML = `<span class="text-white">${text1}</span><span class="blinking-cursor"></span>`;
+                    setTimeout(type, delayBetween); // Wait before starting again
+                    return;
+                }
+            }
+            
+            setTimeout(type, typeSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(type, 500);
+        });
+
+        // --- Swiper Initialization ---
+        var swiper = new Swiper('.swiper-container', {
+            effect: 'coverflow',
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: 'auto',
+            loop: true,
+            coverflowEffect: {
+                rotate: 50,
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows: true,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
